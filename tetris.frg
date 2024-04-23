@@ -32,54 +32,25 @@ pred wellformed {
 
 pred init {
     //at init, all values map to empty
-    Board.values[Int][Int] = Empty
+    Board.values[rows][cols] = Empty
 }
 
-pred add2by2 {
-    //currently this doesnt check for whether the move collisions when "fallingdown"
-
-
-    some col, col2 : cols, row1, row2 : rows | {
-        row2 = add[1, row1]
-        col2 = add[1, col1]
-        //check thats its empty now
-        Board.values[row1,col1] = Empty 
-        Board.values[row2,col1] = Empty
-        Board.values[row1,col2] = Empty 
-        Board.values[row2,col2] = Empty
-        //check thats its full in the next state
-        Board.values'[row1,col] = Filled 
-        Board.values'[row2,col] = Filled
-        Board.values'[row1,col] = Filled 
-        Board.values'[row2,col] = Filled
-        //check that everything else stayed the same
-        all c: cols, r: rows {
-            ((c != col1 and c != col2) or (r != rol1 and r != rol2)) => {
-                Board.values'[r,c] = Board.values[r,c]
-            }
-        } 
-    } 
-    
+pred is_floor[row, col: Int] {
+    (row = 0 or Board.values[add[-1, row], col] = Filled)
+    Board.values[row, col] = Empty
 }
 
-
-pred clear {
-    //TODO: make clearing logic
+pred add1by2_possible[col: cols, row1, row2: rows] {
+    row2 = add[1, row1]
+    is_floor[row1, col]
+    Board.values[row2, col] = Empty
 }
-
-pred end {
-
-    (not add2by2) and (not add1by2)
-}
-
 
 //adding a 1x2 block
 pred add1by2 {
     some col : cols, row1, row2 : rows | {
-        row2 = add[1, row1]
         //check thats its empty now
-        Board.values[row1,col] = Empty 
-        Board.values[row2,col] = Empty
+        add1by2_possible[col, row1, row2]
         //check thats its full in the next state
         Board.values'[row1,col] = Filled 
         Board.values'[row2,col] = Filled
@@ -88,20 +59,69 @@ pred add1by2 {
     }  
 }
 
-run {
+//adding a 2x1 block
+pred add2by1 {
+    some col1, col2 : cols, row : rows | {
+        col2 = add[1, col1]
+        //check thats its empty col
+        is_floor[row, col1]
+        is_floor[row, col2]
+        //check thats its full in the next state
+        Board.values'[row,col1] = Filled 
+        Board.values'[row,col2] = Filled
+        //check that everything else stayed the same
+        Board.values - (row->col1->Empty + row->col2->Empty) = Board.values' - (row->col1->Filled + row->col2->Filled)
+    }  
+}
+
+pred add2by2 {
+    some col1, col2: cols, row1, row2: rows | {
+        col2 = add[1, col1]
+        row2 = add[1, col2]
+        // check it's empty
+        is_floor[row1, col1]
+        is_floor[row2, col2]
+        Board.values[row2, col1] = Empty
+        Board.values[row2, col2] = Empty
+        // check they're full in next state
+        Board.values'[row1, col1] = Filled
+        Board.values'[row1, col2] = Filled
+        Board.values'[row2, col1] = Filled
+        Board.values'[row2, col2] = Filled
+        // check everything else is the same
+        Board.values - ((row1 + row2)->(col1+col2)->Empty) = Board.values' - ((row1 + row2)->(col1+col2)->Filled)
+    }
+}
+
+pred movepossible {
+    // some col: cols, row1, row2: rows | {
+    //     add1by2_possible[col, row1, row2]
+    // }
+    false
+}
+
+-- keep the board the same
+pred doNothing {
+    -- guard
+    not movepossible
+
+    Board.values = Board.values'
+}
+
+-- any transition
+pred delta { 
+    add1by2 or
+    // add2by1 or
+    // add2by2 or
+    doNothing
+}
+
+pred lasso {
     init
     wellformed
-    add1by2
-}
-
-pred traces { 
-    // TODO: Fill me in!
-    init
-    always {wellformed} 
-    always {add1by2 or clear}
-    eventually {end}
+    always { delta }
 }
 
 run {
-    GWtraces
-} for exactly 6 GWAnimal, exactly 3 Goat, exactly 3 Wolf
+    lasso
+}
