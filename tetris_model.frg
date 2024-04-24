@@ -62,7 +62,7 @@ pred add1x2 {
 
 //!!!!  WHEN YOU WRITE A NEW PIECE PRED PUT IT HERE !!!!
 pred addPiece{
-    add1x2 //or 2x2 of T-piece, etc
+    add1x2 //or 2x2 or T-piece, etc
 }
 
 pred doNothing {
