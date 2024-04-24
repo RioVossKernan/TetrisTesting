@@ -1,34 +1,52 @@
-const stage = new Stage();
-var cur_instance = 0;
-var BoardSig = instances[cur_instance].signature('Board').atoms()[0]; // Get the board signature from Forge
-
 //MANUALLY SET THESE VALUES
 const grid_width = 5;
 const grid_height = 5;
 
-//NEXT STATE BUTTON
-let next_button = new Rectangle({
-    label: 'NEXT STATE: ' + `${cur_instance}`,
-    labelColor: 'black',
-    coords: {x: 100, y:10},
-    color: 'orange',
-    height: 30,
-    width: 120,
+//UPDATE SCREEN
+function draw_screen(stg, inst_num){
+    draw_next_button(stg, inst_num);
+    drawStateIndicator(stg, inst_num)
+    drawGrid(stg, inst_num)
+    stg.render(svg, document)
+}
 
-    events: [
-        {event: 'click', callback: () => {
-            cur_instance++;
-            if (cur_instance >= instances.length) {
-                cur_instance = 0;
-            }
-            BoardSig = instances[cur_instance].signature('Board').atoms()[0];
-            stage.render(svg, document);
-        }}
-    ]
-}); 
-stage.add(next_button);
+//NEXT BUTTON
+function draw_next_button(stg, inst_num){
+    let next_button = new TextBox({
+        text: "CLICK HERE",
+        coords: {x: 100, y:10},
+        color: 'Black',
+        height: 30,
+        width: 120,
 
-function updateGrid() {
+        events: [
+            {event: 'click', callback: () => {
+                inst_num++;
+                if (inst_num >= instances.length) {
+                    inst_num = 0;
+                }
+                //make a new stage to draw the new state
+                stg = new Stage();
+                draw_screen(stg, inst_num)
+            }}
+        ]
+    }); 
+    stg.add(next_button);
+}
+
+//STATE INDICATOR TEXT BOX
+function drawStateIndicator(stg, inst_num){
+    let state_indicator = new TextBox({
+        text: `STATE NUM = ${inst_num}`,
+        coords: {x: 300, y:10},
+        color: 'Black',
+        height: 30,
+        width: 120,
+    }); 
+    stg.add(state_indicator);
+}
+
+function drawGrid(stg, inst_num) {
     //INITIALIZE GRID
     let tetrisGrid = new Grid({
         grid_location: {x: 50, y:50},
@@ -39,14 +57,13 @@ function updateGrid() {
     //ADD VALUES TO GRID
     for (r = 0; r < grid_height; r++) {
         for (c = 0; c < grid_width; c++) {
-            let value = BoardSig.values[r][c].toString().substring(0,1) // Get the value at this position as a string
-            if (value === "F") {
-                tetrisGrid.add({x: c, y: r}, new Rectangle({height: 40, width: 40, color: "green", borderColor: "black"}))
+            let tiles = instances[inst_num].signature('Board').join(instances[inst_num].field('tiles')).toString()
+            if (tiles.includes(`${c}, ${r}`)){
+                tetrisGrid.add({x: c, y: grid_height - r - 1}, new Rectangle({height: 40, width: 40, color: "green", borderColor: "black"}));
             }
         }
     }
-    stage.add(tetrisGrid);
-    stage.render(svg, document);
+    stg.add(tetrisGrid);
 }
 
-updateGrid();
+draw_screen(new Stage(), 0);
