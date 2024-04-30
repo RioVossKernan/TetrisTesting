@@ -24,6 +24,8 @@ fun MinY : Int { 0 }
 //Above and Below a given row
 fun above[y : Rows] : Int { add[1,y] }
 fun below[y : Rows] : Int { add[-1,y] }
+fun left[x : Rows] : Int { add[-1,x] }
+fun right[x : Rows] : Int { add[1,x] }
 
 -------------- CORE PREDS --------------
 
@@ -45,6 +47,8 @@ pred isFloor[x,y: Int] {
 
 -------------- PIECES --------------
 
+// |‾‾|
+// |__|  <-  x,y
 pred add1x2_isPossible[x,y : Int] {
     isFloor[x,y]
     (x->y) not in Board.tiles
@@ -58,11 +62,86 @@ pred add1x2 {
     }
 }
 
+// |‾‾‾‾|  <- x,y
+//  ‾‾‾‾
+pred add2x1_isPossible[x,y : Int] {
+    isFloor[x,y]
+    isFloor[left[x],y]
+    (x->y) not in Board.tiles
+    (left[x]->y) not in Board.tiles
+    left[x] in Cols
+}
+pred add2x1 {
+    some x : Cols, y : Rows | {
+        add2x1_isPossible[x,y]
+        Board.tiles' = Board.tiles + ((x->y) + (left[x]->y))
+    }
+}
+
+// |‾‾‾‾|
+// |____|  <-  x,y
+pred add2x2_isPossible[x,y : Int] {
+    isFloor[x,y]
+    isFloor[left[x],y]
+    (x->y) not in Board.tiles
+    (x->above[y]) not in Board.tiles
+    (left[x]->y) not in Board.tiles
+    (left[x]->above[y]) not in Board.tiles
+    above[y] in Rows
+    left[x] in Cols
+}
+pred add2x2 {
+    some x : Cols, y : Rows | {
+        add2x2_isPossible[x,y]
+        Board.tiles' = Board.tiles + ((x->y) + (x->above[y]) + (left[x]->y) + (left[x]->above[y]))
+    }
+}
+
+// |‾‾‾‾|
+//  ‾|__|  <-  x,y
+pred addL1_isPossible[x,y : Int] {
+    isFloor[x,y]
+    (x->y) not in Board.tiles
+    (x->above[y]) not in Board.tiles
+    (left[x]->above[y]) not in Board.tiles
+    above[y] in Rows
+    left[x] in Cols
+}
+pred addL1 {
+    some x : Cols, y : Rows | {
+        addL1_isPossible[x,y]
+        Board.tiles' = Board.tiles + ((x->y) + (x->above[y]) + (left[x]->above[y]))
+    }
+}
+
+// |‾‾|_
+// |____|  <-  x,y
+pred addL2_isPossible[x,y : Int] {
+    isFloor[x,y]
+    isFloor[left[x],y]
+    (x->y) not in Board.tiles
+    (left[x]->y) not in Board.tiles
+    (left[x]->above[y]) not in Board.tiles
+    (right[x]->above[y]) not in Board.tiles
+    above[y] in Rows
+    left[x] in Cols
+}
+pred addL2 {
+    some x : Cols, y : Rows | {
+        addL2_isPossible[x,y]
+        Board.tiles' = Board.tiles + ((x->y) + (left[x]->y) + (left[x]->above[y]))
+    }
+}
+
 -------------- TRANSITIONS --------------
 
 //!!!!  WHEN YOU WRITE A NEW PIECE PRED PUT IT HERE !!!!
 pred addPiece{
-    add1x2 //or 2x2 or T-piece, etc
+    add1x2 or
+    add2x2 or
+    add2x1 or
+    addL1 or
+    addL2
 }
 
 pred doNothing {
