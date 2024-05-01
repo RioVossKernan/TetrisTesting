@@ -2,11 +2,7 @@
 
 open "tetris_model.frg"
 
-pred delta_L1 {
-    clearIsPossible => clear
-    else
-    addL1
-}
+pred delta_L1 { clearIsPossible => clear else addL1 }
 
 pred delta_L1L2 {
     clearIsPossible => clear
@@ -70,10 +66,15 @@ test suite for init {
 /*
 Potential properties to check:
 - pieces stay on the board when you place pieces
-- you can always win given any sequence of pieces
+- you can always win given any sequence of pieces (play forever/lasso)
 - you can always lose given any sequence of pieces
 - you can always clear a line given any sequence of pieces
+- get back to empty board
 - given a board configuration, you will always lose
 - reachability: investigate whether any configuration of blocks is reachable from any other configuration within a finite number of moves
-- explore when T-spins are possible/useful
+- explore when T-spins are possible
+- fewest number of filled in squares that you're guarenteed to lose
+- you shouldn't able to clear a line below a line with ... (some property)
+- smallest piece(s) that you can't clear a line with
+- how to say: "you can't play the same piece twice in a row"
 */

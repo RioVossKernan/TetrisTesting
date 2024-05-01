@@ -14,11 +14,11 @@ one sig Board {
 -------------- HELPER FUNCTIONS --------------
 
 //The possible rows/cols:
-fun Rows : Set { 0 + 1 + 2 + 3 + 4 }
-fun Cols : Set { 0 + 1 + 2 + 3 + 4 }
+fun Rows : Set { 0 + 1 + 2 + 3 + 4 + 5 + 6 + 7 }
+fun Cols : Set { 0 + 1 + 2 + 3 + 4 + 5 + 6 + 7 }
 //Values for reference in preds (kinda like a global const variable)
-fun MaxX : Int { 4 }
-fun MaxY : Int { 4 }
+fun MaxX : Int { 7 }
+fun MaxY : Int { 7 }
 fun MinX : Int { 0 }
 fun MinY : Int { 0 }
 //Above and Below a given row
