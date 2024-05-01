@@ -135,13 +135,42 @@ pred addL2 {
 
 -------------- TRANSITIONS --------------
 
+pred addL{
+    addL1 or
+    addL2
+}
+
 //!!!!  WHEN YOU WRITE A NEW PIECE PRED PUT IT HERE !!!!
 pred addPiece{
     add1x2 or
     add2x2 or
     add2x1 or
-    addL1 or
-    addL2
+    addL
+}
+
+pred NonRepeatingAddPiece{
+    addPiece
+
+    add1x2 => {
+        next_state{not add1x2}
+        next_state{next_state{not add1x2}}
+        next_state{next_state{next_state{not add1x2}}}
+    }
+    add2x2 => {
+        next_state{not add2x2}
+        next_state{next_state{not add2x2}}
+        next_state{next_state{next_state{not add2x2}}}
+    }
+    add2x1 => {
+        next_state{not add2x1}
+        next_state{next_state{not add2x1}}
+        next_state{next_state{next_state{not add2x1}}}
+    }
+    addL => {
+        next_state{not addL}
+        next_state{next_state{not addL}}
+        next_state{next_state{next_state{not addL}}}
+    }
 }
 
 pred doNothing {
@@ -153,6 +182,12 @@ pred delta {
     clearIsPossible => clear
     else
     addPiece
+}
+
+pred delta_non_repeating {
+    clearIsPossible => clear
+    else
+    NonRepeatingAddPiece
 }
 
 -------------- CLEAR PREDS --------------
@@ -191,13 +226,25 @@ pred finite_trace {
 }
 
 -- Infinite gameplay
-pred lasso_trace {
+pred lasso {
     wellformed
     init
     always delta
 }
+
+pred lasso_unique_pieces {
+    lasso_trace_1
+    wellformed
+    init
+    always delta_non_repeating
+}
  
 -------------- RUNS --------------
+// run {
+//     lasso
+// } for exactly 4 Int
+
 run {
-    lasso_trace
+    lasso_unique_pieces
 } for exactly 4 Int
+
