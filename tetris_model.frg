@@ -238,6 +238,12 @@ pred finite_trace {
     delta until always doNothing
 }
 
+pred gameover_trace {
+    wellformed
+    init 
+    delta until always gameover 
+}
+
 -- Infinite gameplay
 pred lasso {
     wellformed
