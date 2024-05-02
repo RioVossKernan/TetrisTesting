@@ -133,6 +133,8 @@ pred addL2 {
     }
 }
 
+pred addBigL1
+
 -------------- TRANSITIONS --------------
 
 pred addL{
@@ -233,7 +235,6 @@ pred lasso {
 }
 
 pred lasso_unique_pieces {
-    lasso_trace_1
     wellformed
     init
     always delta_non_repeating
