@@ -133,6 +133,7 @@ pred addL2 {
     }
 }
 
+
 -------------- TRANSITIONS --------------
 
 pred addL{
@@ -141,7 +142,7 @@ pred addL{
 }
 
 //!!!!  WHEN YOU WRITE A NEW PIECE PRED PUT IT HERE !!!!
-pred addPiece{
+pred addPiece {
     add1x2 or
     add2x2 or
     add2x1 or
@@ -188,6 +189,18 @@ pred delta_non_repeating {
     clearIsPossible => clear
     else
     NonRepeatingAddPiece
+}
+
+//GAMEOVER
+
+pred gameover {
+    all x: Cols, y: Rows | {
+        not add1x2_isPossible[x,y]
+        not add2x2_isPossible[x,y]
+        not add2x1_isPossible[x,y]
+        not addL1_isPossible[x,y]
+        not addL2_isPossible[x,y]
+    }
 }
 
 -------------- CLEAR PREDS --------------
