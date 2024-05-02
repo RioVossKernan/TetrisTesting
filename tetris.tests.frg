@@ -63,6 +63,38 @@ test suite for init {
     }
 }
 
+test suite for addPiece {
+    test expect {
+        addIsSat : {
+            wellformed
+            init
+            addPiece
+        } is sat
+
+        cantAddWhenGameOver : {
+            wellformed 
+            gameover 
+            addPiece
+        } is unsat 
+    }
+}
+
+test suite for gameover {
+    test expect {
+        eventuallyGameOver : {
+            wellformed
+            init 
+            delta until gameover 
+        } is sat 
+
+        initNotGameOver : {
+            wellformed
+            init 
+            gameover
+        } is unsat
+    }
+}
+
 /*
 Potential properties to check:
 - pieces stay on the board when you place pieces
