@@ -133,8 +133,6 @@ pred addL2 {
     }
 }
 
-pred addBigL1
-
 -------------- TRANSITIONS --------------
 
 pred addL{
