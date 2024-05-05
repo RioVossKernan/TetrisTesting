@@ -650,6 +650,7 @@ pred gameover {
         not add2x1_isPossible[x,y]
         not addL1_isPossible[x,y]
         not addL2_isPossible[x,y]
+        not clearIsPossible 
     }
     not clearIsPossible
 }
@@ -687,6 +688,12 @@ pred finite_trace {
     wellformed
     init
     delta until always doNothing
+}
+
+pred gameover_trace {
+    wellformed
+    init 
+    delta until always gameover 
 }
 
 -- Infinite gameplay
