@@ -1,6 +1,6 @@
 //MANUALLY SET THESE VALUES
-const grid_width = 5;
-const grid_height = 5;
+const grid_width = 6;
+const grid_height = 6;
 
 //UPDATE SCREEN
 function draw_screen(stg, inst_num){

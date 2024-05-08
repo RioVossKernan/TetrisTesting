@@ -1,7 +1,6 @@
 #lang forge/temporal
 
-option max_tracelength 15
-option min_tracelength 8
+option max_tracelength 12
 
 option run_sterling "tetris_vis.js"
 
@@ -14,11 +13,11 @@ one sig Board {
 -------------- HELPER FUNCTIONS --------------
 
 //The possible rows/cols:
-fun Rows : Set { 0 + 1 + 2 + 3 + 4 + 6 + 7 + 8 + 9}
-fun Cols : Set { 0 + 1 + 2 + 3 + 4 + 6 + 7 + 8 + 9}
+fun Rows : Set { 0 + 1 + 2 + 3 + 4 + 5}
+fun Cols : Set { 0 + 1 + 2 + 3 + 4 + 5}
 //Values for reference in preds (kinda like a global const variable)
-fun MaxX : Int { 9 }
-fun MaxY : Int { 9 }
+fun MaxX : Int { 5 }
+fun MaxY : Int { 5 }
 fun MinX : Int { 0 }
 fun MinY : Int { 0 }
 //Above and Below a given row
@@ -601,9 +600,9 @@ pred addT4 {
 
 //!!!!  WHEN YOU WRITE A NEW PIECE PRED PUT IT HERE !!!!
 pred addPiece {
-    //add1x2 or
-    //add2x1 or
-    //addSmallL or 
+    // add1x2 or
+    // add2x1 or
+    // addSmallL
 
     //These are the official tetris pieces
     add2x2 or
@@ -618,11 +617,34 @@ pred addPiece {
 pred NonRepeatingAddPiece{
     addPiece
 
-    // add2x2 => {
-    //     next_state{not add2x2}
-    //     next_state{next_state{not add2x2}}
-    //     next_state{next_state{next_state{not add2x2}}}
-    // }
+    add2x2 => {
+        next_state{not add2x2}
+        next_state{next_state{not add2x2}}
+    }
+    addL => {
+        next_state{not addL}
+        next_state{next_state{not addL}}
+    }
+    addJ => {
+        next_state{not addJ}
+        next_state{next_state{not addJ}}
+    }
+    addS => {
+        next_state{not addS}
+        next_state{next_state{not addS}}
+    }
+    addZ => {
+        next_state{not addZ}
+        next_state{next_state{not addZ}}
+    }
+    addI => {
+        next_state{not addI}
+        next_state{next_state{not addI}}
+    }
+    addT => {
+        next_state{not addT}
+        next_state{next_state{not addT}}
+    }
 }
 
 pred doNothing {
@@ -683,6 +705,14 @@ pred init {
     no tiles
 }
 
+pred init_midgame{
+    //board with a in the first and second rows
+    Board.tiles = {
+        0->0 + 1->0 + 3->0 + 4->0 +
+        0->1 + 1->1 + 2->1 + 3->1
+    }
+}
+
 -- gameplay eventually halts
 pred finite_trace {
     wellformed
@@ -699,21 +729,25 @@ pred gameover_trace {
 -- Infinite gameplay
 pred lasso {
     wellformed
-    init
     always delta
 }
 
 pred lasso_unique_pieces {
     wellformed
-    init
     always delta_non_repeating
 }
  
 -------------- RUNS --------------
-run {
-    lasso
-} for exactly 5 Int
+-- basic run 
+ run {
+    init
+    lasso_unique_pieces
+} for exactly 4 Int
 
+-- recover from a gap in the middle
 // run {
-//     lasso_unique_pieces
+//     wellformed
+//     init_midgame
+//     delta_non_repeating until always doNothing
+//     eventually init
 // } for exactly 4 Int
