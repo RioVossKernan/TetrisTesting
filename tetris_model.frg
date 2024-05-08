@@ -705,7 +705,7 @@ pred init {
     no tiles
 }
 
-pred init_midgame{
+pred init_midgame_from_mistake{
     //board with a in the first and second rows
     Board.tiles = {
         0->0 + 1->0 + 3->0 + 4->0 +
@@ -747,7 +747,7 @@ pred lasso_unique_pieces {
 -- recover from a gap in the middle
 // run {
 //     wellformed
-//     init_midgame
+//     init_midgame_from_mistake
 //     delta_non_repeating until always doNothing
 //     eventually init
 // } for exactly 4 Int
