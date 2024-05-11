@@ -19,7 +19,7 @@ function drawGrid(stg, inst_num) {
     //ADD VALUES TO GRID
     for (r = 0; r < grid_height; r++) {
         for (c = 0; c < grid_width; c++) {
-            let tiles = instances[inst_num].signature('Board').join(instances[inst_num].field('tiles')).toString()
+            let tiles = instance.signature('Board').join(instance.field('tiles')).toString()
             if (tiles.includes(`${c}, ${r}`)){
                 tetrisGrid.add({x: c, y: grid_height - r - 1}, new Rectangle({height: 40, width: 40, color: "green", borderColor: "black"}));
             }

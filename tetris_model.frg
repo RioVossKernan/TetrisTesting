@@ -16,8 +16,8 @@ one sig Board {
 fun Rows : Set { 0 + 1 + 2 + 3 + 4 + 5}
 fun Cols : Set { 0 + 1 + 2 + 3 + 4 + 5}
 //Values for reference in preds (kinda like a global const variable)
-fun MaxX : Int { 5 }
-fun MaxY : Int { 5 }
+fun MaxX : Int { 6 }
+fun MaxY : Int { 6 }
 fun MinX : Int { 0 }
 fun MinY : Int { 0 }
 //Above and Below a given row
@@ -598,6 +598,12 @@ pred addT4 {
 }
 -------------- TRANSITIONS --------------
 
+pred addSmallPiece {
+    add1x2 or
+    add2x1 or
+    addSmallL
+}
+
 //!!!!  WHEN YOU WRITE A NEW PIECE PRED PUT IT HERE !!!!
 pred addPiece {
     // add1x2 or
@@ -667,11 +673,25 @@ pred delta_non_repeating {
 //GAMEOVER
 pred gameover {
     all x: Cols, y: Rows | {
-        not add1x2_isPossible[x,y]
         not add2x2_isPossible[x,y]
-        not add2x1_isPossible[x,y]
         not addL1_isPossible[x,y]
         not addL2_isPossible[x,y]
+        not addL3_isPossible[x,y]
+        not addL4_isPossible[x,y]
+        not addJ1_isPossible[x,y]
+        not addJ2_isPossible[x,y]
+        not addJ3_isPossible[x,y]
+        not addJ4_isPossible[x,y]
+        not addS1_isPossible[x,y]
+        not addS2_isPossible[x,y]
+        not addZ1_isPossible[x,y]
+        not addZ2_isPossible[x,y]
+        not addI1_isPossible[x,y]
+        not addI2_isPossible[x,y]
+        not addT1_isPossible[x,y]
+        not addT2_isPossible[x,y]
+        not addT3_isPossible[x,y]
+        not addT4_isPossible[x,y]
         not clearIsPossible 
     }
     not clearIsPossible
@@ -710,6 +730,18 @@ pred init_midgame_from_mistake{
     Board.tiles = {
         0->0 + 1->0 + 3->0 + 4->0 +
         0->1 + 1->1 + 2->1 + 3->1
+    }
+}
+
+pred init_unplace_able_board {
+    Board.tiles = {
+        0->5 + 1->5 + 2->5 + 3->5 + 4->5 + 5->4
+    }
+}
+
+pred init_impossible_board {
+    Board.tiles = {
+        0->4 + 1->4 + 2->4 + 3->4 + 4->3 + 5->5
     }
 }
 
