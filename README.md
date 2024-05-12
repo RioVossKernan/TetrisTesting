@@ -21,6 +21,8 @@ Goals/Achievements: We originally planned to have a open-ended attempt at modeli
 
 Visualization: We have our own custom visualizer for our game and when running the model we can see each transition as a "screenshot" of the tetris game when another piece "lands" onto the "floor", we can imagine this as a piece being "stamped" instead of falling to simplify the transition logic between game states. An example instance of our model is running game_over trace, which will show a random sequence of pieces being placed until eventually the game is over. 
 
+Testing: We were extensive with our testing and proved/verified many properties of our game using text expects. All our tests and properties are in tetris.tests and some include: always able to win/lose regardless of sequence, going back to an empty board after filling pieces, fewest number of pieces needed to lose the game. 
+
 Collaborators: Rio Voss-Kernan, Jason Eveleth, Jonathan Dou
 
 
